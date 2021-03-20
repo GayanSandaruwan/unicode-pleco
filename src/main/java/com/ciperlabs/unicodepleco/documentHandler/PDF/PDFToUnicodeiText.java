@@ -27,7 +27,7 @@ public class PDFToUnicodeiText {
     static XWPFRun run;
     static XWPFRun oldRun;
 
-    public void startConvertioin(File file) {
+    public void startConversion(File file, String outputPath) throws IOException {
 
         String pdf = file.getAbsolutePath();
         //Sinhala fonts
@@ -44,26 +44,22 @@ public class PDFToUnicodeiText {
         tamfonts.setCs("Latha");
         tamilUnicodeCTRPr.setRFonts(tamfonts);
 
-        try {
-            PdfReader reader = new PdfReader(pdf);
-            XWPFDocument doc = new XWPFDocument(); //a document for 
-            PdfReaderContentParser parser = new PdfReaderContentParser(reader);
-            for (int i = 1; i <= reader.getNumberOfPages(); i++) {
+        PdfReader reader = new PdfReader(pdf);
+        XWPFDocument doc = new XWPFDocument(); //a document for
+        PdfReaderContentParser parser = new PdfReaderContentParser(reader);
+        for (int i = 1; i <= reader.getNumberOfPages(); i++) {
 //			for(int i=17;i<20;i++){		//TODO delete test only
-                p = doc.createParagraph();
-                run = p.createRun();
+            p = doc.createParagraph();
+            run = p.createRun();
 //	            run.getCTR().setRPr(sinhalaUnicodeCTRPr);
-                TextExtractionStrategy strategy =
-                        parser.processContent(i, new FontDetectionStrategy(run, sinhalaUnicodeCTRPr, tamilUnicodeCTRPr));
+            TextExtractionStrategy strategy =
+                    parser.processContent(i, new FontDetectionStrategy(run, sinhalaUnicodeCTRPr, tamilUnicodeCTRPr));
 //                String text = strategy.getResultantText();
-                run.addBreak(BreakType.PAGE);
-            }
-            FileOutputStream out = new FileOutputStream("pdf3.docx");
-            doc.write(out);
-
-        } catch (IOException e) {
-            e.printStackTrace();
+            run.addBreak(BreakType.PAGE);
         }
+        FileOutputStream out = new FileOutputStream(outputPath);
+        doc.write(out);
+
     }
 }
 

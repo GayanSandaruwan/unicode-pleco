@@ -9,6 +9,7 @@ import org.apache.pdfbox.text.PDFTextStripper;
 import org.apache.pdfbox.text.TextPosition;
 
 import java.io.File;
+import java.io.FileWriter;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
@@ -19,11 +20,10 @@ import java.util.List;
 public class PDFToUnicodePDFBOX {
 
 
-    public void startConvertion(File file) {
+    public void startConversion(File file, String outputPath) throws IOException {
         PDDocument pdDoc = null;
         COSDocument cosDoc = null;
 
-        try {
 //             PDFBox 2.0.8 require org.apache.pdfbox.io.RandomAccessRead
             RandomAccessFile randomAccessFile = new RandomAccessFile(file, "r");
             PDFParser parser = new PDFParser(randomAccessFile);
@@ -51,10 +51,10 @@ public class PDFToUnicodePDFBOX {
 //                            prevBaseFont = baseFont;
 //                        }
 //                            builder.append(position.getUnicode());
-                        String[] convertedText = convertionEngine.toUnicode(position.getUnicode(), font);
+//                        String[] convertedText = convertionEngine.toUnicode(position.getUnicode(), font);
 
-                        builder.append(convertedText[0]);
-
+//                        builder.append(convertedText[0]);
+                        builder.append(position.getUnicode());
                     }
 
                     writeString(builder.toString());
@@ -66,9 +66,7 @@ public class PDFToUnicodePDFBOX {
             String parsedText = pdfStripper.getText(pdDoc);
             System.out.println(parsedText);
 
-
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
+            FileWriter myWriter = new FileWriter(outputPath);
+            myWriter.write(parsedText);
     }
 }
